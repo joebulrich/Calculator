@@ -1,0 +1,353 @@
+class Presentational extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      display: "0",
+      operator: "",
+      numOne: "",
+      numTwo: "",
+      total: "",
+      status: "clear",
+      lastKey: ""
+    };
+
+    this.buttonClick = this.buttonClick.bind(this);
+  }
+
+  buttonClick(e) {
+    if (e.target.value === "clear") {
+      this.setState({
+        display: "0",
+        operator: "",
+        numOne: "",
+        numTwo: "",
+        total: "",
+        status: "clear",
+        lastKey: ""
+      });
+    } else if (e.target.value === "=") {
+      if (this.state.total === '') {
+      let total = 0;
+      switch (this.state.operator) {
+        case "+":
+          total =
+            Math.round(
+              this.state.numOne * 100000000 +
+                parseFloat(this.state.display) * 100000000
+            ) / 100000000;
+          break;
+        case "-":
+          total =
+            Math.round(
+              this.state.numOne * 100000000 -
+                parseFloat(this.state.display) * 100000000
+            ) / 100000000;
+          break;
+        case "*":
+          total =
+            Math.round(
+              this.state.numOne *
+                100000000 *
+                (parseFloat(this.state.display) * 100000000)
+            ) /
+            (100000000 * 100000000);
+          break;
+        case "/":
+          total =
+            (this.state.numOne * 100000000) /
+            (parseFloat(this.state.display) * 100000000);
+          break;
+        default:
+          total = 0;
+      }
+      this.setState({
+        total: total,
+        display: total,
+        lastKey: e.target.value,
+        status: 'clear'
+      });
+      } else if (this.state.total !== '') {
+      let total = 0;
+      switch (this.state.operator) {
+        case "+":
+          total =
+            Math.round(
+              this.state.total * 100000000 +
+                parseFloat(this.state.display) * 100000000
+            ) / 100000000;
+          break;
+        case "-":
+          total =
+            Math.round(
+              this.state.total * 100000000 -
+                parseFloat(this.state.display) * 100000000
+            ) / 100000000;
+          break;
+        case "*":
+          total =
+            Math.round(
+              this.state.total *
+                100000000 *
+                (parseFloat(this.state.display) * 100000000)
+            ) /
+            (100000000 * 100000000);
+          break;
+        case "/":
+          total =
+            (this.state.total * 100000000) /
+            (parseFloat(this.state.display) * 100000000);
+          break;
+        default:
+          total = 0;
+      }
+      this.setState({
+        total: total,
+        display: total,
+        lastKey: e.target.value
+      })
+      };
+    } else if (
+      (e.target.value !== "+") &
+      (e.target.value !== "-") &
+      (e.target.value !== "*") &
+      (e.target.value !== "/")
+    ) {
+      if ((e.target.value !== "0") & (this.state.status === "clear")) {
+        this.setState({
+          display: e.target.value,
+          status: "used",
+          lastKey: e.target.value
+        });
+      } else if ((this.state.status === "used") & (e.target.value !== ".")) {
+        this.setState({
+          display: this.state.display + e.target.value,
+          lastKey: e.target.value
+        });
+      } else if (
+        (this.state.status === "used") &
+        (e.target.value === ".") &
+        (this.state.display.indexOf(".") === -1)
+      ) {
+        this.setState({
+          display: this.state.display + e.target.value,
+          lastKey: e.target.value
+        });
+      }
+    } else if (
+      (e.target.value === "+") |
+      (e.target.value === "-") |
+      (e.target.value === "*") |
+      (e.target.value === "/")
+    ) {
+      if (this.state.numOne === "") {
+        if (e.target.value ==='-' & this.state.status === 'clear') {
+          this.setState({
+          display: e.target.value,
+          status: "used",
+          lastKey: e.target.value
+          });
+        } else {
+        this.setState({
+          display: e.target.value,
+          status: "clear",
+          numOne: this.state.display,
+          operator: e.target.value,
+          lastKey: e.target.value
+        });
+        };
+      } else if ((this.state.numOne !== "") & (this.state.total === "")) {
+        if (this.state.lastKey === '+' | this.state.lastKey === '-' | this.state.lastKey === '*' | this.state.lastKey === '/') {
+          if (e.target.value === '-') {
+            this.setState({
+              display: e.target.value,
+              status: "used",
+              lastKey: e.target.value
+            });
+          } else {
+            this.setState({
+              display: e.target.value,
+              status: 'clear',
+              operator: e.target.value,
+              lastKey: e.target.value
+            })
+          }
+        } else {
+          let total = 0;
+          switch (this.state.operator) {
+            case "+":
+              total =
+                Math.round(
+                  this.state.numOne * 100000000 +
+                    parseFloat(this.state.display) * 100000000
+                ) / 100000000;
+              break;
+            case "-":
+              total =
+                Math.round(
+                  this.state.numOne * 100000000 -
+                    parseFloat(this.state.display) * 100000000
+                ) / 100000000;
+              break;
+            case "*":
+              total =
+                Math.round(
+                  this.state.numOne *
+                    100000000 *
+                    (parseFloat(this.state.display) * 100000000)
+                ) /
+                (100000000 * 100000000);
+              break;
+            case "/":
+              total =
+                (this.state.numOne * 100000000) /
+                (parseFloat(this.state.display) * 100000000);
+              break;
+            default:
+              total = 0;
+          }
+          this.setState({
+            numTwo: this.state.numOne,
+            numOne: parseFloat(this.state.display),
+            total: total,
+            operator: e.target.value,
+            display: e.target.value,
+            status: "clear",
+            lastKey: e.target.value
+          });
+        }
+      } else if ((this.state.numOne !== "") & (this.state.total !== ""))
+        if (
+          (this.state.lastKey === "+") |
+          (this.state.lastKey === "-") |
+          (this.state.lastKey === "*") |
+          (this.state.lastKey === "/")
+        ) {
+          if (e.target.value === '-') {
+            this.setState({
+              display: e.target.value,
+              status: "used",
+              lastKey: e.target.value
+            });  
+          } else {
+            this.setState({
+              operator: e.target.value,
+              display: e.target.value,
+              status: "clear",
+              lastKey: e.target.value
+           });
+          }
+        } else if (this.state.lastKey === '='){ 
+          this.setState({
+            display: e.target.value,
+            operator: e.target.value,
+            status: 'clear',
+            lastKey: e.target.value
+          })
+        } else {
+          let total = 0;
+          switch (this.state.operator) {
+            case "+":
+              total =
+                Math.round(
+                  this.state.total * 100000000 +
+                    parseFloat(this.state.display) * 100000000
+                ) / 100000000;
+              break;
+            case "-":
+              total =
+                Math.round(
+                  this.state.total * 100000000 -
+                    parseFloat(this.state.display) * 100000000
+                ) / 100000000;
+              break;
+            case "*":
+              total =
+                Math.round(
+                  this.state.total *
+                    100000000 *
+                    (parseFloat(this.state.display) * 100000000)
+                ) /
+                (100000000 * 100000000);
+              break;
+            case "/":
+              total =
+                (this.state.total * 100000000) /
+                (parseFloat(this.state.display) * 100000000);
+              break;
+            default:
+              total = 0;
+          }
+          this.setState({
+            numOne: parseFloat(this.state.display),
+            total: total,
+            operator: e.target.value,
+            display: e.target.value,
+            status: "clear",
+            lastKey: e.target.value
+          });
+        }
+    }
+  }
+  render() {
+    return (
+      <div id="container">
+        <br />
+        <br />
+        <h1 id="display">{this.state.display}</h1>
+        <button id="zero" value={0} onClick={this.buttonClick}>
+          0
+        </button>
+        <button id="one" value={1} onClick={this.buttonClick}>
+          1
+        </button>
+        <button id="two" value={2} onClick={this.buttonClick}>
+          2
+        </button>
+        <button id="three" value={3} onClick={this.buttonClick}>
+          3
+        </button>
+        <button id="four" value={4} onClick={this.buttonClick}>
+          4
+        </button>
+        <button id="five" value={5} onClick={this.buttonClick}>
+          5
+        </button>
+        <button id="six" value={6} onClick={this.buttonClick}>
+          6
+        </button>
+        <button id="seven" value={7} onClick={this.buttonClick}>
+          7
+        </button>
+        <button id="eight" value={8} onClick={this.buttonClick}>
+          8
+        </button>
+        <button id="nine" value={9} onClick={this.buttonClick}>
+          9
+        </button>
+        <button id="equals" value="=" onClick={this.buttonClick}>
+          =
+        </button>
+        <button id="clear" value="clear" onClick={this.buttonClick}>
+          clear
+        </button>
+        <button id="add" value="+" onClick={this.buttonClick}>
+          +
+        </button>
+        <button id="subtract" value="-" onClick={this.buttonClick}>
+          -
+        </button>
+        <button id="multiply" value="*" onClick={this.buttonClick}>
+          X
+        </button>
+        <button id="divide" value="/" onClick={this.buttonClick}>
+          /
+        </button>
+        <button id="decimal" value="." onClick={this.buttonClick}>
+          .
+        </button>
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(<Presentational />, document.getElementById("app"));
